@@ -1,64 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Note-ed</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          width: {
-            'popup': '300px'
-          }
+    <meta charset="UTF-8">
+    <title>Note-ed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    width: {
+                        'popup': '350px'  // Slightly wider for better readability
+                    }
+                }
+            }
         }
-      }
-    }
-  </script>
+    </script>
 </head>
 <body class="bg-gray-50">
-  <div class="w-popup p-4 min-h-[400px] flex flex-col">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Note-ed</h2>
+    <div class="w-popup p-4 min-h-[400px] flex flex-col">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Note-ed</h2>
+        
+        <!-- Add loading state -->
+        <div id="loadingState" class="hidden">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+        </div>
 
-    <div class="space-y-4 mb-6">
-      <button 
-        id="captureTimestamp"
-        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200 ease-in-out"
-      >
-        Capture Current Time
-      </button>
+        <!-- Add error message container -->
+        <div id="errorMessage" class="hidden text-red-500 mb-4 p-2 bg-red-50 rounded"></div>
 
-      <div 
-        id="currentTimestamp"
-        class="text-gray-700 font-medium py-2 px-3 bg-gray-100 rounded-lg"
-      ></div>
+        <div class="space-y-4 mb-6">
+            <button 
+                id="captureTimestamp"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200 ease-in-out disabled:opacity-50"
+            >
+                Capture Current Time
+            </button>
 
-      <textarea 
-        id="noteContent"
-        placeholder="Enter your note here..."
-        class="w-full h-24 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-      ></textarea>
+            <div 
+                id="currentTimestamp"
+                class="text-gray-700 font-medium py-2 px-3 bg-gray-100 rounded-lg"
+            ></div>
 
-      <select 
-        id="folderSelect"
-        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-      >
-        <option value="">Select Folder...</option>
-      </select>
+            <textarea 
+                id="noteContent"
+                placeholder="Enter your note here..."
+                class="w-full h-24 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            ></textarea>
 
-      <button 
-        id="saveNote"
-        class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200 ease-in-out"
-      >
-        Save Note
-      </button>
+            <!-- Add folder management -->
+            <div class="flex gap-2">
+                <button 
+                    id="newFolder"
+                    class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200 ease-in-out flex-shrink-0"
+                >
+                    New Folder
+                </button>
+                <select 
+                    id="folderSelect"
+                    class="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                >
+                    <option value="">Select Folder...</option>
+                </select>
+            </div>
+
+            <button 
+                id="saveNote"
+                class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200 ease-in-out"
+            >
+                Save Note
+            </button>
+        </div>
+
+        <div 
+            id="notesList"
+            class="flex-1 overflow-y-auto space-y-2 max-h-[300px] rounded-lg"
+        ></div>
     </div>
 
-    <div 
-      id="notesList"
-      class="flex-1 overflow-y-auto space-y-2 max-h-[300px] rounded-lg"
-    ></div>
-  </div>
-
-  <script src="popup.js"></script>
+    <script src="popup.js"></script>
 </body>
 </html>

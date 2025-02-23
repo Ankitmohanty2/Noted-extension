@@ -12,6 +12,7 @@ const styles = `
     padding: 20px;
     transform: translateX(100%);
     transition: transform 0.3s ease;
+    overflow-y: auto;  /* Add scrolling for long content */
   }
 
   .note-ed-sidebar.open {
@@ -57,6 +58,21 @@ const styles = `
     padding: 5px;
     resize: vertical;
   }
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .close-sidebar {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+  }
 `;
 
 // Inject styles into the page
@@ -68,7 +84,10 @@ document.head.appendChild(styleSheet);
 const sidebarHTML = `
   <button class="note-ed-toggle">📝 Notes</button>
   <div class="note-ed-sidebar">
-    <h2>Video Notes</h2>
+    <div class="sidebar-header">
+      <h2>Video Notes</h2>
+      <button class="close-sidebar">×</button>
+    </div>
     <div class="note-controls">
       <button id="captureTimestamp" class="timestamp-btn">Capture Current Time</button>
       <div id="currentTimestamp"></div>
@@ -130,8 +149,18 @@ function initializeSidebar() {
     sidebar.classList.toggle('open');
   });
 
+  // Add close button functionality
+  const closeBtn = document.querySelector('.close-sidebar');
+  closeBtn.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+  });
+
   // Load folders
   chrome.storage.sync.get(['folders'], (result) => {
+    if (chrome.runtime.lastError) {
+      console.error('Error loading folders:', chrome.runtime.lastError);
+      return;
+    }
     const folders = result.folders || ['Default'];
     folderSelect.innerHTML = ''; // Clear existing options
     folders.forEach(folder => {
@@ -157,10 +186,17 @@ function initializeSidebar() {
   saveNote.addEventListener('click', () => {
     const timestamp = timestampDisplay.textContent;
     const seconds = parseFloat(timestampDisplay.dataset.seconds);
-    const note = noteContent.value;
+    const note = noteContent.value.trim();
     const folder = folderSelect.value;
     
-    if (!note || !timestamp) return;
+    if (!note) {
+      alert('Please enter a note');
+      return;
+    }
+    if (!timestamp) {
+      alert('Please capture a timestamp first');
+      return;
+    }
 
     const noteData = {
       timestamp,
