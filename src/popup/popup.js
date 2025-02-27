@@ -5,18 +5,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const folderSelect = document.getElementById('folderSelect');
     const saveNote = document.getElementById('saveNote');
     const notesList = document.getElementById('notesList');
+    const loadingState = document.getElementById('loadingState');
+    const errorMessage = document.getElementById('errorMessage');
+    const newFolderBtn = document.getElementById('newFolder');
+
+    let currentVideoId = '';
+    let currentVideoTitle = '';
+
+    const showLoading = () => loadingState.classList.remove('hidden');
+    const hideLoading = () => loadingState.classList.add('hidden');
+    const showError = (message) => {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove('hidden');
+        setTimeout(() => errorMessage.classList.add('hidden'), 3000);
+    };
   
     let currentVideoId = '';
     let currentVideoTitle = '';
   
     const loadFolders = () => {
+      showLoading();
       chrome.storage.sync.get(['folders'], (result) => {
         const folders = result.folders || ['Default'];
         folderSelect.innerHTML = folders.map(folder => 
           `<option value="${folder}">${folder}</option>`
         ).join('');
+        hideLoading();
       });
     };
+
+    newFolderBtn.addEventListener('click', () => {
+      const folderName = prompt('Enter new folder name:');
+      if (!folderName) return;
+
+      chrome.storage.sync.get(['folders'], (result) => {
+        const folders = result.folders || ['Default'];
+        if (folders.includes(folderName)) {
+          showError('Folder already exists');
+          return;
+        }
+        folders.push(folderName);
+        chrome.storage.sync.set({ folders }, () => {
+          loadFolders();
+          folderSelect.value = folderName;
+        });
+      });
+    });
   
     const displayNotes = () => {
       chrome.storage.sync.get(['notes'], (result) => {
@@ -82,9 +116,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   
     saveNote.addEventListener('click', () => {
-      if (!noteContent.value.trim() || !timestampDisplay.textContent) {
+      const content = noteContent.value.trim();
+      if (!content) {
+        showError('Please enter a note');
         return;
       }
+      if (!timestampDisplay.textContent) {
+        showError('Please capture a timestamp first');
+        return;
+      }
+      if (!folderSelect.value) {
+        showError('Please select a folder');
+        return;
+      }
+
+      showLoading();
   
       chrome.storage.sync.get(['notes'], (result) => {
         const notes = result.notes || [];
