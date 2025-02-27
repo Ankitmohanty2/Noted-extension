@@ -4,15 +4,17 @@ const styles = `
     position: fixed;
     right: 0;
     top: 0;
-    width: 300px;
+    width: 350px;
     height: 100vh;
-    background: white;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    background: #1a1a1a;
+    color: #ffffff;
+    box-shadow: -3px 0 10px rgba(0,0,0,0.3);
     z-index: 9999;
-    padding: 20px;
+    padding: 24px;
     transform: translateX(100%);
-    transition: transform 0.3s ease;
-    overflow-y: auto;  /* Add scrolling for long content */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 
   .note-ed-sidebar.open {
@@ -24,17 +26,38 @@ const styles = `
     right: 20px;
     top: 20px;
     z-index: 10000;
-    padding: 10px;
+    padding: 12px 16px;
     background: #4285f4;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .note-ed-toggle:hover {
+    background: #3367d6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   }
 
   .note-item {
-    border-bottom: 1px solid #eee;
-    padding: 10px 0;
+    background: #2d2d2d;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .note-item:hover {
+    background: #363636;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   }
 
   .timestamp-btn {
