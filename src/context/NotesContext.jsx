@@ -9,6 +9,10 @@ export function NotesProvider({ children }) {
   useEffect(() => {
     // Load notes from chrome.storage.sync
     chrome.storage.sync.get(['notes'], (result) => {
+      if (chrome.runtime.lastError) {
+        console.error('Error loading notes:', chrome.runtime.lastError);
+        return;
+      }
       setNotes(result.notes || []);
     });
   }, []);

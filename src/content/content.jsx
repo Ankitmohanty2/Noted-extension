@@ -197,6 +197,10 @@ function initializeSidebar() {
   // Capture timestamp
   captureBtn.addEventListener('click', () => {
     const video = document.querySelector('video');
+    if (!video) {
+      console.error('No video element found');
+      return;
+    }
     if (video) {
       const currentTime = video.currentTime;
       const formattedTime = formatTime(currentTime);

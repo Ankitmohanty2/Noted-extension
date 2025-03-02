@@ -20,9 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => errorMessage.classList.add('hidden'), 3000);
     };
   
-    let currentVideoId = '';
-    let currentVideoTitle = '';
-  
     const loadFolders = () => {
       showLoading();
       chrome.storage.sync.get(['folders'], (result) => {
